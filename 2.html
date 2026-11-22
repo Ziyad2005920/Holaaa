@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الذي يمشي نحو الدخان</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Naskh+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --ink:       #0e0c0a;
+  --deep:      #13100d;
+  --paper:     #ede5d4;
+  --aged:      #c8b89a;
+  --ghost:     #8a7a6a;
+  --ash:       #3a342c;
+  --ember:     #c4622a;
+  --pale-fire: #e8a86a;
+  --silver:    #"b8c4c8";
+  --void:      #1a1612;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Noto Naskh Arabic', serif;
+  font-size: 1.15rem;
+  line-height: 2;
+  cursor: default;
+  overflow-x: hidden;
+}
+
+/* ─── PARTICLES / FALLING ASH ─── */
+#ash-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.35;
+}
+
+/* ─── COVER ─── */
+.cover {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, #1e1610 0%, #0e0c0a 100%);
+}
+
+.cover-bg-strokes {
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  background-image:
+    repeating-linear-gradient(170deg, transparent 0px, transparent 38px, #c8b89a 38px, #c8b89a 39px),
+    repeating-linear-gradient(100deg, transparent 0px, transparent 80px, #c8b89a 80px, #c8b89a 81px);
+}
+
+.cover-inner {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 4rem 2rem;
+  max-width: 700px;
+}
+
+.cover-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.5rem;
+  color: var(--ghost);
+  margin-bottom: 2.5rem;
+  animation: rise 2s ease both;
+}
+
+.cover-kanji {
+  font-size: clamp(4rem, 12vw, 9rem);
+  line-height: 1;
+  color: var(--ember);
+  text-shadow:
+    0 0 60px rgba(196,98,42,0.25),
+    0 0 120px rgba(196,98,42,0.1);
+  font-family: 'Amiri', serif;
+  font-weight: 700;
+  animation: rise 1.8s ease both;
+  animation-delay: 0.2s;
+  letter-spacing: -0.02em;
+}
+
+.cover-title {
+  margin-top: 1.5rem;
+  font-family: 'Amiri', serif;
+  font-size: clamp(1.1rem, 3.5vw, 1.8rem);
+  color: var(--aged);
+  letter-spacing: 0.08rem;
+  animation: rise 2s ease both;
+  animation-delay: 0.5s;
+  line-height: 1.6;
+}
+
+.cover-rule {
+  width: 1px;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, var(--ember), transparent);
+  margin: 2.5rem auto;
+  animation: rise 2s ease both;
+  animation-delay: 0.8s;
+}
+
+.cover-sub {
+  font-size: 0.9rem;
+  color: var(--ghost);
+  font-style: italic;
+  animation: rise 2s ease both;
+  animation-delay: 1s;
+  line-height: 2;
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--ghost);
+  font-size: 0.75rem;
+  letter-spacing: 0.3rem;
+  animation: pulse 2.5s ease infinite;
+  z-index: 2;
+}
+
+/* ─── MAIN CONTENT ─── */
+.story-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 0 1.8rem 6rem;
+}
+
+/* ─── CHAPTER HEADERS ─── */
+.ch {
+  padding: 6rem 0 1.5rem;
+  position: relative;
+}
+
+.ch-num {
+  font-size: 0.7rem;
+  letter-spacing: 0.5rem;
+  color: var(--ember);
+  opacity: 0.7;
+  margin-bottom: 0.8rem;
+}
+
+.ch-title {
+  font-family: 'Amiri', serif;
+  font-size: clamp(1.7rem, 5vw, 2.8rem);
+  color: var(--paper);
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.ch-sub {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--ghost);
+  font-style: italic;
+  letter-spacing: 0.05rem;
+}
+
+.ch-line {
+  margin-top: 1.8rem;
+  height: 1px;
+  background: linear-gradient(to left, transparent, var(--ash) 40%, transparent);
+}
+
+/* ─── PROSE ─── */
+p {
+  margin-bottom: 1.6rem;
+  color: rgba(237,229,212,0.82);
+  text-align: justify;
+  hyphens: auto;
+}
+
+p.wide {
+  color: rgba(237,229,212,0.92);
+  font-size: 1.18rem;
+}
+
+/* Drop cap */
+p.drop::first-letter {
+  font-family: 'Amiri', serif;
+  font-size: 4.5rem;
+  line-height: 0.75;
+  float: right;
+  margin-left: 0.15em;
+  margin-top: 0.1em;
+  color: var(--ember);
+  text-shadow: 0 0 25px rgba(196,98,42,0.35);
+}
+
+/* ─── PULL QUOTE ─── */
+.pq {
+  margin: 2.8rem 0;
+  padding: 1.4rem 0 1.4rem 1.6rem;
+  border-left: 2px solid var(--ember);
+  font-family: 'Amiri', serif;
+  font-size: clamp(1.1rem, 3vw, 1.45rem);
+  font-style: italic;
+  color: var(--pale-fire);
+  line-height: 1.9;
+  position: relative;
+}
+.pq::before {
+  content: '"';
+  position: absolute;
+  right: -0.3rem;
+  top: -0.5rem;
+  font-size: 5rem;
+  color: var(--ember);
+  opacity: 0.12;
+  font-family: 'Amiri', serif;
+  line-height: 1;
+}
+
+/* ─── SCENE BREAK ─── */
+.scene-break {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin: 3rem 0;
+  opacity: 0.35;
+}
+.scene-break::before,
+.scene-break::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--ash);
+}
+.scene-break span {
+  font-size: 0.6rem;
+  letter-spacing: 0.4rem;
+  color: var(--ghost);
+  white-space: nowrap;
+}
+
+/* ─── VISION BLOCK (supernatural moment) ─── */
+.vision {
+  background: linear-gradient(135deg, rgba(196,98,42,0.04), rgba(196,98,42,0.01));
+  border: 1px solid rgba(196,98,42,0.12);
+  border-radius: 2px;
+  padding: 2rem 2rem 2rem 2.5rem;
+  margin: 3rem 0;
+  position: relative;
+  overflow: hidden;
+}
+.vision::before {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, transparent, var(--ember) 50%, transparent);
+  opacity: 0.5;
+}
+.vision-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.5rem;
+  color: var(--ember);
+  opacity: 0.6;
+  margin-bottom: 1rem;
+}
+.vision p {
+  color: rgba(232,168,106,0.75);
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+.vision p:last-child { margin-bottom: 0; }
+
+/* ─── MEMORY INSET ─── */
+.memory {
+  margin: 2.5rem 0;
+  padding: 1.5rem 1.8rem;
+  background: rgba(255,255,255,0.02);
+  border-right: 2px solid rgba(200,184,154,0.2);
+}
+.memory p {
+  font-size: 0.95rem;
+  color: rgba(200,184,154,0.65);
+  font-style: italic;
+  margin-bottom: 0.8rem;
+  line-height: 2;
+}
+
+/* ─── END SEAL ─── */
+.end-seal {
+  text-align: center;
+  padding: 5rem 0 2rem;
+}
+.seal-symbol {
+  font-family: 'Amiri', serif;
+  font-size: 3rem;
+  color: var(--ember);
+  opacity: 0.4;
+  display: block;
+  margin-bottom: 2rem;
+}
+.seal-text {
+  font-size: 0.8rem;
+  letter-spacing: 0.3rem;
+  color: var(--ghost);
+  line-height: 2.5;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes rise {
+  from { opacity:0; transform: translateY(18px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%,100% { opacity:0.3; transform: translateX(-50%) translateY(0); }
+  50%      { opacity:0.7; transform: translateX(-50%) translateY(4px); }
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--ash); border-radius:3px; }
+
+@media(max-width:600px){
+  p.drop::first-letter { font-size:3.5rem; }
+  .vision { padding:1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="ash-canvas"></canvas>
+
+<!-- ══════════════ COVER ══════════════ -->
+<div class="cover">
+  <div class="cover-bg-strokes"></div>
+  <div class="cover-inner">
+    <p class="cover-eyebrow">حكاية في ثلاثة أصوات وصمتٍ واحد</p>
+    <div class="cover-kanji">烟帝</div>
+    <h1 class="cover-title">الذي يمشي نحو الدخان</h1>
+    <div class="cover-rule"></div>
+    <p class="cover-sub">
+      رأيتُه أول مرة من بعيدٍ جداً<br>
+      ظننتُه رجلاً عادياً<br>
+      ثم اقتربت، وفهمت أن لا شيء فيه عادي —<br>
+      حتى خوفه
+    </p>
+  </div>
+  <p class="scroll-cue">▼</p>
+</div>
+
+<!-- ══════════════ STORY ══════════════ -->
+<div class="story-wrap">
+
+  <!-- ████ CHAPTER 0 — narrator intro ████ -->
+  <div class="ch">
+    <p class="ch-num">مقدمة الراوي</p>
+    <h2 class="ch-title">ما الذي يُجبرك على الاقتراب من النار</h2>
+    <p class="ch-sub">— صوت يان-تسي، المؤرخ الأصغر، يكتب بعد ثلاثين عاماً —</p>
+    <div class="ch-line"></div>
+  </div>
+
+  <p class="drop wide">لو كنتُ أعلم ما سأرى، لاخترتُ طريقاً آخر. كانت ثمة دروبٌ كثيرة تُفضي من مدينة الحجر الأبيض إلى العاصمة — درب الأنهار ودرب الجبال ودرب التجار الذي يمشي فيه كل من يخاف الوحدة. اخترتُ درب الغابة الميتة، لأن المؤرخين الشباب يظنون أن المناطق المنسية تخبئ الحقيقة. وربما كانوا محقّين. لكن الحقيقة التي وجدتُها في تلك الغابة كانت أثقل مما تحتمله رسالة.</p>
+
+  <p>رأيتُه واقفاً بين الأشجار المتفحّمة. رجلٌ طويل، شعرٌ أبيض فاجأ وجهَه الذي لم يتجاوز الخمسين. وقف هناك كأن الغابة المحروقة حوله ليست حادثةً طارئة بل مشهدٌ اختاره عمداً ليقف فيه. لاحظتُ يديه أولاً — كانتا ترتجفان بشكلٍ خفيف، رعشةٌ دقيقة جداً لا يراها إلا من يبحث عنها.</p>
+
+  <p>لم أعرف يومها أن ذلك الارتجاف لم يكن خوفاً ولا مرضاً. كان ثمناً.</p>
+
+  <div class="scene-break"><span>◆ ◆ ◆</span></div>
+
+  <p>اسمه كيان-مو. في اللغة القديمة يعني "من يحمل السماء على كتفيه" — وقد قالت لي أمه لاحقاً أنها لم تقصد ذلك حين سمّته. اختارت الاسم لأنه كان طفلاً يرفع رأسه دائماً نحو الأعلى، يحدّق في السماء بعيونٍ فضولية كأنه يتوقع أن يرى شيئاً ينزل من هناك.</p>
+
+  <p>في النهاية، نزل شيءٌ ما. فقط لم يكن ما أرادت.</p>
+
+  <!-- ████ CHAPTER 1 ████ -->
+  <div class="ch">
+    <p class="ch-num">الفصل الأول</p>
+    <h2 class="ch-title">القوة التي تسبق الفهم</h2>
+    <p class="ch-sub">— السنة السابعة والعشرون من عمره. حرب حدود الشمال —</p>
+    <div class="ch-line"></div>
+  </div>
+
+  <p class="drop">أخبرني القائد العجوز ليو-شان — وكان شاهداً — أن كيان-مو لم يكن الأقوى في ميدان المعركة الأولى. كان ثمة رجالٌ أضخم منه جسداً، وأسرع منه يداً، وأكثر منه حقداً على العدو. لكن حدث شيءٌ في الساعة الثالثة من المعركة، حين انكسر الجناح الأيسر وبدأ الفرار.</p>
+
+  <p>قال ليو-شان: "رأيتُه يصرخ لإيقاف الهاربين. ليس صرخةَ قائد — صرخةَ شخصٍ يعتقد بجنون أن بإمكانه وقف التيار بيديه العاريتين. ثم... لمستُه شيءٌ ما. الهواء تغيّر. ليس الريح — الهواء نفسه صار ثقيلاً مختلفاً. وجنوده الفارّون توقفوا. ليس لأنهم شجعاء فجأة — بل لأنهم لم يستطيعوا التنفس إلا حين استداروا نحو المعركة."</p>
+
+  <div class="vision">
+    <p class="vision-label">◈ ما رآه كيان-مو في تلك اللحظة — بكلماته، بعد سنوات —</p>
+    <p>"لم أشعر أنني أفعل شيئاً. شعرتُ أنني أُفعَل به — كأن شيئاً ما يستخدمني كأداة، وأنا لستُ الأداة ولا اليد التي تُمسكها. لا أعرف كيف أُفسّر هذا بشكلٍ أفضل. أنا لم أُوقف أحداً. أنا فقط... أردتُ بشدة، وتحوّلت إرادتي إلى شيءٍ في الهواء."</p>
+    <p>"وحين انتهى الأمر، كانت يدي الخامسة والعشرون على اليسرى بيضاء تماماً. ليست شيباً — بيضاء كالحجر."</p>
+  </div>
+
+  <p>لم تعُد تلك الخصلة الخامسة والعشرون إلى لونها أبداً. وفي كل مرة استخدم فيها تلك القوة الغامضة، ابيضّت خصلةٌ أخرى. ليس على الفور — يأخذ الأمر يومين أو ثلاثة، كما لو أن جسده يحتاج إلى وقتٍ ليُسجّل الثمن الذي دفعه.</p>
+
+  <p>حاول في البداية أن يفهم. ذهب إلى الحكماء والشيوخ والكهنة وأصحاب الكتب القديمة. كل واحدٍ منهم أعطاه تفسيراً مختلفاً — الروح الجبلية، دم الأسلاف، عقدٌ مع كيانٍ لا اسم له، قدرٌ محفورٌ في النجوم. لم يُقنعه أيٌّ منها. لكن الجميع اتفق على شيءٍ واحد حين سُئل عن الشعر الأبيض:</p>
+
+  <div class="pq">
+    كل إنسانٍ يأتي إلى الحياة بمقدارٍ محدود من شيءٍ لا اسم له.<br>
+    أنت تصرف مقدارك أسرع من الآخرين.<br>
+    حين ينتهي، تنتهي.
+  </div>
+
+  <p>سألهم: "كم تبقّى لي؟" لم يعرف أحدٌ. سألهم: "هل يمكنني التوقف عن استخدام هذه القوة؟" قالوا نعم، وربما عشتَ طويلاً. لكن كيان-مو نظر إليهم بهدوءٍ غريب وقال الجملة التي رواها لي لاحقاً ولم أنسها:</p>
+
+  <div class="pq">
+    إذا كانت القوة تنقص مني، وليس استخدامُها هو ما يُنقصها — فالأمر سيان.<br>
+    والأشياء التي لا تتغير بقرارك لا تستحق قراراً.
+  </div>
+
+  <!-- ████ CHAPTER 2 ████ -->
+  <div class="ch">
+    <p class="ch-num">الفصل الثاني</p>
+    <h2 class="ch-title">ما يراه من يعلم أنه يُحصى</h2>
+    <p class="ch-sub">— السنة الثانية والأربعون. قمة السلطة —</p>
+    <div class="ch-line"></div>
+  </div>
+
+  <p class="drop wide">حين رأيتُه أول مرة في الغابة المتفحّمة، لم أعرف أنه الإمبراطور كيان-مو. عرفتُ لاحقاً. ثم دُعيتُ إلى القصر — ليس كضيف، بل كمؤرخ مُعيَّن. أُمرتُ بتسجيل كل شيء. "كل شيء" قالها وزيره بتشديد يوحي أنه يعني: حتى الأشياء التي لا تُكتب عادةً.</p>
+
+  <p>أدركتُ لاحقاً أن كيان-مو هو من أصدر هذا الأمر. أراد شاهداً دقيقاً. لم يُرد أحداً يكتب مجده — أراد أحداً يُوثّق ما سيأتي.</p>
+
+  <p>كان في الثانية والأربعين من عمره. شعرُه كله أبيض الآن. ليس شيخوخةً — أبيضٌ كالثلج الطازج، بلونٍ ينضح بشيءٍ ليس الزمن. وكان جميلاً بطريقةٍ مزعجة، كالجليد في الشتاء جميلٌ لكنه يُعلمك أن تبقى بعيداً.</p>
+
+  <div class="scene-break"><span>◆ ◆ ◆</span></div>
+
+  <p>جلستُ معه ثلاث ليالٍ متتالية في مكتبته — غرفةٌ واسعة تفوح منها رائحة الحبر القديم وشيءٌ آخر لا أُحدّده، كرائحة الهواء قبيل العاصفة. لاحظتُ أنه لا يُضيء إلا شمعةً واحدة مهما كان المكان مظلماً. سألتُه، فضحك — ضحكةٌ حقيقية، أول ضحكة رأيتُها منه —</p>
+
+  <p>"حين تعلم أن عمرك محدود، تُصبح مُبدّداً للضوء الإضافي."</p>
+
+  <p>في الليلة الثانية، سألتُه السؤال الذي كان يُعذّبني منذ أسابيع: "هل تخاف؟"</p>
+
+  <p>أجاب بعد صمتٍ طويل جداً، كأنه كان يُجرّب الإجابة في فمه قبل أن يُخرجها:</p>
+
+  <div class="pq">
+    الخوف يكون من الاحتمال.<br>
+    أنا لا أواجه احتمالاً — أنا أواجه تاريخاً مكتوباً لم أقرأه بعد.<br>
+    هذا شيءٌ آخر. لا أعرف له اسماً.
+  </div>
+
+  <p>ثم بعد لحظة: "لكن نعم. أخاف. فقط لا أعرف ممَّ بالضبط."</p>
+
+  <div class="scene-break"><span>◆ ◆ ◆</span></div>
+
+  <p>كانت ليلة الثالثة حين أخبرني بالشيء الذي غيّر فهمي لكل ما رأيتُه:</p>
+
+  <p>"حين كنتُ في السادسة والعشرين، قبل المعركة الأولى التي ظهرت فيها هذه القوة، رأيتُ حلماً. رجلٌ عجوز وقف أمامي في الحلم وقال جملةً واحدة: ستبني ما يبقى، لكنك لن تبقى معه. ثم استيقظتُ."</p>
+
+  <p>"لم يقل لي من هو. لم يُعطني تعليمات. فقط تلك الجملة. وحين استيقظتُ، كان على يدي اليسرى خطٌّ أبيض رفيع لم يكن هناك قبل النوم."</p>
+
+  <p>صمتَ، ثم أضاف بنبرةٍ أهدأ:</p>
+
+  <p>"ليس المهم أنني عرفتُ. المهم أنني اخترتُ رغم ذلك. الناس يظنون أن معرفة النهاية تُفسد القصة — لكنهم مخطئون. معرفة النهاية تُحرّرك من قلق النتائج. تبنيه لأنه يستحق البناء، لا لأنك ستكون هناك حين يكتمل."</p>
+
+  <div class="vision">
+    <p class="vision-label">◈ ما رأيته أنا — يان-تسي — في تلك الليلة</p>
+    <p>حين انتهى الكلام وخرجتُ، كنتُ أُريد أن أبكي ولم أعرف لماذا. ليس شفقةً — كيان-مو لم يطلب الشفقة ولم يرحّب بها. لكن ثمة شيءٌ في الإنسان الذي يُقرّر أن يهتم بشيءٍ يعلم أنه لن يراه يكتمل — شيءٌ يكسرك ويُصلحك في الوقت ذاته.</p>
+    <p>ظللتُ واقفاً في الممر طويلاً. من خلف الباب سمعتُ صوتَ ورقٍ يُقلَّب. كان لا يزال يعمل.</p>
+  </div>
+
+  <!-- ████ CHAPTER 3 ████ -->
+  <div class="ch">
+    <p class="ch-num">الفصل الثالث</p>
+    <h2 class="ch-title">حين يخاف الآخرون مما لا يفهمون</h2>
+    <p class="ch-sub">— السنة السابعة والأربعون. بدء التصدّع —</p>
+    <div class="ch-line"></div>
+  </div>
+
+  <p class="drop">الشيء الذي لا يفهمه من لم يعش في القصر: الخوف يمشي فيه كالهواء. لا تشمّه، لكنك تتنفّسه. وحين يكون الإمبراطور رجلاً تخرج منه طاقةٌ لا اسم لها، ويمتلك قوةً لا يستطيع أحدٌ أن يتنبأ بشكلها أو وقتها — يتحوّل الهواء إلى شيءٍ آخر.</p>
+
+  <p>الجيران الذين أرسلوا الهدايا لسنواتٍ بدأوا يُرسلون السفراء الذين يبتسمون ببرودة. الوزراء الذين عاشوا بقربه عقوداً بدأوا ينامون بشكلٍ أقل. لم تكن المشكلة ما فعله — كانت المشكلة أنهم لا يعلمون ما الذي يستطيع فعله.</p>
+
+  <div class="memory">
+    <p>قال لي الوزير الكبير تشان-وي ذات يوم، بعد أن تأكّد أننا وحدنا: "لو كان رجلاً عادياً لأحببناه. ولو كان وحشاً صريحاً لحاربناه. لكنه يجلس بيننا ويبتسم ويُصدر الأوامر العادلة — ثم تحدث الأشياء التي لا تُفسَّر. كيف تثق برجلٍ لا يفهم نفسه؟"</p>
+    <p>سألتُه: "هل تُحبّه؟" صمت طويلاً ثم قال: "نعم. وهذا بالضبط هو المشكلة."</p>
+  </div>
+
+  <p>كانت الخيانة الأولى في السنة الثامنة والأربعين. ليست ضربةً، ولا تحالفاً عسكرياً — مجرد وثيقةٍ أُرسلت في السر إلى مملكة الغرب تصف فيها "طبيعة الإمبراطور الغير طبيعية" وتعرض التعاون. وقّع عليها خمسةٌ من قادته المقرّبين. رجالٌ أكلوا على مائدته وضحكوا معه وقاتلوا تحت رايته.</p>
+
+  <p>حين وصلت الوثيقة إليه — أُحضرت له من جاسوسٍ أمينٍ — قرأها مرتين ببطء. ثم طواها بعناية. ثم نظر إلى النافذة طويلاً.</p>
+
+  <p>لم يُعدمهم. لم يُحاكمهم. استدعى الخمسة فُرادى، وتحدّث مع كلٍّ منهم ساعةً كاملة في غرفةٍ مغلقة. لا أعلم ما قال لكل واحد. لكن حين خرجوا، كان على وجوههم تعبيرٌ لا أستطيع تسميته بدقة — شيءٌ بين الخزي والتحرّر.</p>
+
+  <p>وبقوا في مناصبهم.</p>
+
+  <div class="pq">
+    سألتُه بعدها: لماذا لم تُعاقبهم؟<br><br>
+    قال: لأنهم خافوا. والخوف ليس خيانةً — الخوف إنسانيٌّ للغاية.<br>
+    العقاب الوحيد الصحيح للخوف هو أن تُريَ الخائف أنه كان مخطئاً في ما خاف منه.<br>
+    وأنا لم أستطع إخبارهم أنه لا شيء يُخيف فيّ — لأنني لستُ متأكداً من ذلك.
+  </div>
+
+  <!-- ████ CHAPTER 4 ████ -->
+  <div class="ch">
+    <p class="ch-num">الفصل الرابع</p>
+    <h2 class="ch-title">الهجوم الكبير</h2>
+    <p class="ch-sub">— السنة الثانية والخمسون. الشتاء —</p>
+    <div class="ch-line"></div>
+  </div>
+
+  <p class="drop wide">جاؤوا من أربع جهاتٍ في وقتٍ واحد. ليس مصادفةً — تنسيقٌ أخذ سنواتٍ. أربع ممالك لم تتحالف يوماً قبل هذا، لأن بينها من الخلافات ما يكفي لملء كتبٍ. ما وحّدها لم يكن الطمع في الأرض، ولم يكن الكره. كان الخوف.</p>
+
+  <p>خوفٌ من رجلٍ لا يعرفون حدوده. خوفٌ من قوةٍ لا قواعد لها. خوفٌ من أن ينتهي صبره يوماً ما وأن لا يجدوا وقتاً كافياً للاستعداد.</p>
+
+  <p>وكان الأمر المحزن والمضحك في الوقت ذاته: كيان-مو كان على وشك النهاية. شعره أبيض بالكامل منذ سنوات، وبيده اليسرى خطوطٌ بيضاء تشابكت كشبكة عنكبوت. كان ينام أكثر، ويأكل أقل، وحين يقف ساعاتٍ طويلة رأيتُه يُمسك بحافة المكتب بطريقةٍ من يتذكّر نفسه أن يبقى واقفاً.</p>
+
+  <p>لو انتظروا سنتين، ربما لم يكونوا يحتاجون إلى جيوشهم.</p>
+
+  <div class="scene-break"><span>◆ ◆ ◆</span></div>
+
+  <p>في الليلة قبل المعركة الكبرى، جاء إلى غرفتي. لم أكن أتوقع ذلك. جلس على الكرسي المقابل لي وسألني: "ماذا ستكتب عني؟"</p>
+
+  <p>قلتُ: الحقيقة.</p>
+
+  <p>قال: "الحقيقة مُتعبة للكاتب وللقارئ. لكن اكتبها." ثم أضاف: "اكتب أنني كنتُ خائفاً. ليس من الموت — من أن يموت ما بنيتُه معي. ثم اكتب أنني قرّرتُ ألا أكون جباناً بما يكفي لأُصدّق هذا الخوف."</p>
+
+  <p>سألتُه: هل تعرف ماذا سيحدث غداً؟</p>
+
+  <p>قال: "أعرف ما سيحدث لي. لا أعرف ما سيحدث لهم." ثم بعد صمت: "لكن أعرف أن ما بنيتُه يكفي. ليس كاملاً — لم يكن يوماً كاملاً. لكنه يكفي لأن يبقى بعدي ويكتمل."</p>
+
+  <div class="vision">
+    <p class="vision-label">◈ ما جرى في ميدان المعركة — شهادة مباشرة —</p>
+    <p>استخدم القوة مرتين. ليس أكثر. المرة الأولى حين أوشك الجناح الشمالي على الانهيار — شيءٌ اندفع من جسده كموجةٍ حرارية لا تُحرق، صوتٌ لم يكن صوتاً بل ضغطٌ في الصدر — وتوقفت مقدمة الجيش الشمالي كأن الهواء تحوّل فجأة إلى جدار.</p>
+    <p>المرة الثانية في آخر النهار، حين كادوا يُطوّقونه. نظر حوله بهدوءٍ غريب وفعل شيئاً لا أعرف وصفه — الأرض رجفت، لكن ليس رجفة زلزال. كأنها تذكّرت شيئاً وقرّرت أن تقوله بصوتٍ عالٍ.</p>
+    <p>بعدها جلس على الأرض. ببساطة كاملة. جلس وأسند رأسه على ركبتيه. وكان شعره — ذلك الأبيض الكثيف — قد خفّ. ليس سقوطاً — خفّ، كالضباب حين يبدأ في التبدّد.</p>
+  </div>
+
+  <!-- ████ CHAPTER 5 — end ████ -->
+  <div class="ch">
+    <p class="ch-num">الفصل الأخير</p>
+    <h2 class="ch-title">الثمن الأخير</h2>
+    <p class="ch-sub">— بعد المعركة بثلاثة أيام —</p>
+    <div class="ch-line"></div>
+  </div>
+
+  <p class="drop">لم أتركه وحيداً في تلك الأيام الثلاثة. كنتُ أجلس في الغرفة المجاورة وأكتب بيدٍ واحدة وأُبقي الأذن مفتوحة. كانت أمّه هناك — امرأةٌ صغيرة في الثمانين، صامتة كالشجرة القديمة، تمسك يده ولا تبكي. وكانت هناك طفلتُه الصغيرة رين-ها، التي لم تفهم لماذا أبوها لا يُكلّمها بنفس الطريقة التي اعتادتها.</p>
+
+  <p>في اليوم الثاني، طلب أن يُحضَر له ورقٌ وحبر. كتب رسائل. كثيرٌ من الرسائل. للأمراء والقادة والعلماء والحرفيين الذين بنوا الجسور. كتب لأعدائه الأربعة رسائل قصيرة لا تحمل غضباً. وكتب لوزيره تشان-وي رسالةً طويلة جداً أُغلقت بشمعةٍ حمراء وكُتب عليها: "افتحها حين تشك. ليس قبل ذلك."</p>
+
+  <p>في اليوم الثالث، طلب أن أجلس بجانبه. قرأتُ له — لا شيء عميق، قصيدةٌ قديمة عن الأنهار كان يُحبّها. وحين انتهيتُ، قال:</p>
+
+  <div class="pq">
+    أنت تعلم أن الأنهار لا تُفكّر في إلى أين تذهب.<br>
+    هي فقط تسير نحو الأسفل لأن هذا ما تفعله الأنهار.<br>
+    ظننتُ دائماً أن هذا يعني أنها بلا إرادة.<br>
+    الآن أعتقد أنه يعني أنها واثقةٌ جداً من إرادتها لدرجة أنها لا تحتاج إلى التفكير فيها.
+  </div>
+
+  <p>بعدها بساعتين، مات.</p>
+
+  <p>ليس بشكلٍ دراميّ. ليس بألم ظاهر. نام — وفي النوم توقّف. وكان وجهه حين توقف بتعبيرٍ لم أرَه من قبل عليه: ارتياح. ليس استسلاماً — ارتياح من يُنجز شيئاً كان يحمله طويلاً.</p>
+
+  <div class="scene-break"><span>◆ ◆ ◆</span></div>
+
+  <p>كتبتُ هذا كله في ثلاثين سنة. بعض الليالي كنتُ أُوقف الكتابة وأُدرك أن يدي ترتجف — ليس مشكلةً طبية، فقط ثقل الذاكرة يسكن الأصابع أحياناً.</p>
+
+  <p>كثيرٌ من الناس سألوني: كيف تكتب عن رجلٍ تحبّه دون أن تُجمّله؟ قلتُ لهم: لا أجمّله. أصفه. وحين تصف بصدقٍ شخصاً حقيقياً، لا تحتاج إلى التجميل.</p>
+
+  <p>المدارس التي بناها لا تزال تُدرَس فيها. الجسور ما زالت واقفة. القوانين التي كتبها عُدِّلت وطُوِّرت لكن عظامها — هيكلها الداخلي — لا يزال هو. والأعداء الأربعة الذين هاجموه؟ أبناؤهم يتزوّجون الآن من أبناء من كان يحكمهم. التاريخ لديه مزاجٌ ساخر.</p>
+
+  <p>لكن الشيء الذي أفكّر فيه أكثر من أي شيءٍ آخر ليس إنجازاته. الذي يطاردني هو تلك الجملة التي قالها في الليلة الأخيرة، حين سألتُه إن كان يتمنى أنه عاش حياةً مختلفة — حياةً عادية، بلا قوة وبلا ثمن:</p>
+
+  <div class="pq">
+    فكّرتُ في هذا السؤال طويلاً.<br>
+    الإجابة نعم ولا في نفس الوقت.<br>
+    نعم لأنني أريد أن أكون هناك حين تكبر رين-ها.<br>
+    لا لأنني لو كنتُ شخصاً آخر، لما كانت رين-ها هي رين-ها.<br><br>
+    وبعدين — الحياة العادية ليست أقل ثمناً.<br>
+    فقط ثمنها مُخفيٌّ بشكلٍ أفضل.
+  </div>
+
+  <!-- END -->
+  <div class="end-seal">
+    <span class="seal-symbol">烟</span>
+    <p class="seal-text">
+      هنا تنتهي شهادة يان-تسي، المؤرخ الثامن والثلاثون للإمبراطورية<br>
+      كُتبت في السنة الثلاثين من رحيل كيان-مو<br>
+      وأُودعت في المكتبة الكبرى التي بناها بنفسه<br>
+      ─────<br>
+      <em style="color:var(--ghost); font-size:0.85rem;">
+        الدخان لا يموت — يتحوّل إلى هواء<br>
+        والهواء لا يختفي — يتحوّل إلى تنفّس<br>
+        والتنفّس لا ينتهي — يتحوّل إلى حياةٍ تالية لا تعرف مصدرها
+      </em>
+    </p>
+  </div>
+
+</div>
+
+<!-- ══════════════ ASH PARTICLES ══════════════ -->
+<script>
+(function(){
+  const c = document.getElementById('ash-canvas');
+  const ctx = c.getContext('2d');
+  let W, H, particles = [];
+
+  function resize(){
+    W = c.width = window.innerWidth;
+    H = c.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function rand(a,b){ return a + Math.random()*(b-a); }
+
+  for(let i=0; i<55; i++){
+    particles.push({
+      x: rand(0, window.innerWidth),
+      y: rand(0, window.innerHeight),
+      r: rand(0.5, 2.2),
+      vx: rand(-0.15, 0.15),
+      vy: rand(-0.4, -0.1),
+      alpha: rand(0.1, 0.55),
+      drift: rand(0, Math.PI*2),
+      driftSpeed: rand(0.003, 0.012)
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      p.drift += p.driftSpeed;
+      p.x += p.vx + Math.sin(p.drift)*0.3;
+      p.y += p.vy;
+      if(p.y < -10){ p.y = H+10; p.x = rand(0,W); }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      const flicker = 0.85 + 0.15*Math.sin(Date.now()*0.002 + p.drift*7);
+      ctx.fillStyle = `rgba(196,98,42,${p.alpha * flicker})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+</body>
+</html>

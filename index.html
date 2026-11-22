@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>بورتفوليو | مساحتي الرقمية والأدبية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #090d16;
+            --card-bg: rgba(30, 41, 59, 0.75);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-secondary: #818cf8;
+            --novel-gold: #fbbf24;
+            --status-live: #10b981;
+            --status-dev: #f59e0b;
+            --status-plan: #8b5cf6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.65;
+            overflow-x: hidden;
+            padding-bottom: 85px; /* مساحة لشريط التنقل السفلي للهاتف */
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.1), transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(129, 140, 248, 0.1), transparent 40%);
+        }
+
+        /* شريط الهراء الإخباري المتحرك */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background: rgba(56, 189, 248, 0.12);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 8px 0;
+            font-size: 0.8rem;
+            color: var(--accent);
+        }
+
+        .ticker {
+            display: inline-block;
+            white-space: nowrap;
+            animation: ticker 28s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* الشريط العلوي المبسط للهاتف */
+        .top-bar {
+            background: rgba(9, 13, 22, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 1.15rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-pill {
+            font-size: 0.72rem;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--status-live);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 650px; /* عرض مثالي للهواتف والأجهزة اللوحية */
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* قسم الترحيب (Hero) */
+        header {
+            text-align: center;
+            padding: 38px 10px 25px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: var(--accent);
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            background: linear-gradient(135deg, #ffffff 30%, #38bdf8 75%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.98rem;
+            margin-bottom: 24px;
+        }
+
+        .hero-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 13px 16px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.92rem;
+            text-align: center;
+            display: block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            color: #090d16;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-main);
+        }
+
+        /* إحصائيات عبثية (شبكة 2×2 للهاتف) */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 25px 0 40px;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.65rem;
+            font-weight: 900;
+            color: var(--accent);
+            display: block;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        /* عناوين الأقسام */
+        .section-header {
+            margin: 40px 0 18px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 24px;
+            background: linear-gradient(180deg, var(--accent), var(--accent-secondary));
+            border-radius: 4px;
+        }
+
+        /* أزرار التصفية القابلة للتمرير الأفقي */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            flex: 1;
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: #090d16;
+            border-color: var(--accent);
+        }
+
+        /* شبكة البطاقات (عمود واحد مريح للهاتف) */
+        .projects-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:active {
+            transform: scale(0.99);
+        }
+
+        /* بطاقات الروايات الخاصة */
+        .card.novel-card {
+            background: linear-gradient(145deg, rgba(30, 27, 46, 0.85), rgba(19, 23, 38, 0.95));
+            border: 1px solid rgba(251, 191, 36, 0.25);
+        }
+
+        .novel-title {
+            font-family: 'Amiri', serif;
+            font-size: 1.5rem !important;
+            color: #fef3c7;
+        }
+
+        .novel-tag {
+            font-size: 0.75rem;
+            color: var(--novel-gold);
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        /* شارات الحالة */
+        .badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .badge.live {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--status-live);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge.dev {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--status-dev);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .badge.plan {
+            background-color: rgba(139, 92, 246, 0.15);
+            color: var(--status-plan);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .badge.novel {
+            background-color: rgba(251, 191, 36, 0.15);
+            color: var(--novel-gold);
+            border: 1px solid rgba(251, 191, 36, 0.35);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            margin-bottom: 16px;
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .tech-tag {
+            font-size: 0.72rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+            padding: 3px 9px;
+            border-radius: 6px;
+        }
+
+        /* أزرار البطاقات بحجم مثالي للإصبع */
+        .btn-visit, .btn-novel, .btn-disabled {
+            display: block;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.95rem;
+            padding: 13px 16px;
+            border-radius: 12px;
+        }
+
+        .btn-visit {
+            background-color: var(--accent);
+            color: #090d16;
+        }
+
+        .btn-novel {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            color: #090d16;
+        }
+
+        .btn-disabled {
+            background-color: rgba(255, 255, 255, 0.04);
+            color: var(--text-muted);
+            font-weight: 500;
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+        }
+
+        /* قسم الحشو الفلسفي */
+        .lore-section {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 22px;
+            margin-top: 40px;
+        }
+
+        .lore-section h2 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+
+        .lore-section p {
+            color: #cbd5e1;
+            margin-bottom: 12px;
+            font-size: 0.94rem;
+        }
+
+        .quote-box {
+            border-right: 3px solid var(--accent-secondary);
+            background: rgba(129, 140, 248, 0.08);
+            padding: 12px 15px;
+            border-radius: 0 10px 10px 0;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            margin: 16px 0;
+        }
+
+        .faq-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .faq-item {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .faq-item h4 {
+            color: var(--text-main);
+            margin-bottom: 6px;
+            font-size: 0.98rem;
+        }
+
+        .faq-item p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 0;
+        }
+
+        /* قسم التواصل (Session) */
+        .contact-box {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95));
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 18px;
+            padding: 26px 18px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .contact-box h2 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .contact-box p {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            margin-bottom: 18px;
+        }
+
+        .session-id-box {
+            background-color: #090d16;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 12px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 0.82rem;
+            color: var(--accent);
+            word-break: break-all;
+            margin-bottom: 12px;
+            user-select: all;
+        }
+
+        .btn-copy {
+            width: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            color: #090d16;
+            border: none;
+            padding: 13px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .copy-feedback {
+            color: var(--status-live);
+            font-size: 0.88rem;
+            font-weight: 700;
+            height: 20px;
+            margin-top: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .copy-feedback.show {
+            opacity: 1;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            margin-top: 35px;
+            padding: 15px;
+        }
+
+        /* شريط التنقل السفلي الثابت للهاتف (App Bottom Bar) */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 5px;
+            z-index: 100;
+        }
+
+        .mobile-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 4px 12px;
+            border-radius: 10px;
+        }
+
+        .mobile-nav a:active, .mobile-nav a:hover {
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 1.15rem;
+        }
+    </style>
+</head>
+<body id="top">
+
+    <!-- شريط الهراء المتحرك -->
+    <div class="ticker-wrap">
+        <div class="ticker">
+            ⚡ تنبيه: الموقع يعمل بنسبة 99% بالقهوة و 1% بالأمل • تم تسمية الملفات 1 و 2 و 3 و 4 اختصاراً للوقت • اقرأ "الخط السابع عشر" و"الإمبراطور الأخير" الآن! ⚡
+        </div>
+    </div>
+
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <div class="logo">المختبر الرقمي &trade;</div>
+        <span class="status-pill">● متصل الآن</span>
+    </div>
+
+    <div class="container">
+        <!-- الترويسة -->
+        <header>
+            <span class="hero-badge">مطور • كاتب • صانع عوالم</span>
+            <h1>مرحباً بك في مساحتي الرقمية والأدبية</h1>
+            <p>أبني مواقع وألعاباً تفاعلية في النهار، وأنسج عوالم الروايات في منتصف الليل.</p>
+            <div class="hero-buttons">
+                <a href="#novels" class="btn-primary">الروايات</a>
+                <a href="#projects" class="btn-secondary">المشاريع</a>
+            </div>
+        </header>
+
+        <!-- إحصائيات عبثية -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="stat-number">∞</span>
+                <span class="stat-label">أفكار تبدأ الساعة 3 فجراً</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number">4</span>
+                <span class="stat-label">ملفات مختصرة من الكسل</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number">2</span>
+                <span class="stat-label">روايات ملحمية منشورة</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number">99%</span>
+                <span class="stat-label">كافيين في مجرى الدم</span>
+            </div>
+        </div>
+
+        <!-- قسم الروايات -->
+        <div class="section-header" id="novels">
+            <h2 class="section-title">أعمالي الأدبية ورواياتي</h2>
+        </div>
+
+        <div class="projects-grid">
+            <!-- الرواية الأولى: 1.html -->
+            <div class="card novel-card">
+                <span class="novel-tag">رواية • غموض / خيال</span>
+                <div class="card-header">
+                    <h3 class="novel-title">الخط السابع عشر</h3>
+                    <span class="badge novel">متاحة الآن</span>
+                </div>
+                <p>في مكان لا يظهر على الخرائط التقليدية، يمتد الخط السابع عشر حيث تتقاطع المصائر وتنكشف الأسرار المخفية.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">تشويق</span>
+                    <span class="tech-tag">حبكة معقدة</span>
+                </div>
+                <a href="1.html" class="btn-novel">اقرأ الرواية الآن</a>
+            </div>
+
+            <!-- الرواية الثانية: 2.html -->
+            <div class="card novel-card">
+                <span class="novel-tag">رواية • ملحمي / فانتازيا</span>
+                <div class="card-header">
+                    <h3 class="novel-title">الإمبراطور الأخير</h3>
+                    <span class="badge novel">متاحة الآن</span>
+                </div>
+                <p>حين تتهاوى العروش وتُطوى صفحات الممالك العظمى، يقف وريث واحد في مواجهة مصير محتوم لإعادة كتابة التاريخ.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">ملحمة</span>
+                    <span class="tech-tag">صراع عروش</span>
+                </div>
+                <a href="2.html" class="btn-novel">اقرأ الرواية الآن</a>
+            </div>
+        </div>
+
+        <!-- قسم المشاريع والمواقع -->
+        <div class="section-header" id="projects">
+            <h2 class="section-title">مشاريعي ومواقعي</h2>
+            <div class="filter-tabs">
+                <button class="filter-btn active" onclick="filterProjects('all', this)">الكل</button>
+                <button class="filter-btn" onclick="filterProjects('live', this)">متاح الآن</button>
+                <button class="filter-btn" onclick="filterProjects('dev', this)">قيد التطوير</button>
+            </div>
+        </div>
+        
+        <div class="projects-grid" id="projectsContainer">
+            <!-- مشروع 1: 3.html -->
+            <div class="card project-item" data-status="live">
+                <div class="card-header">
+                    <h3>ذهن حاد للرياضيات</h3>
+                    <span class="badge live">متاح الآن</span>
+                </div>
+                <p>منصة تفاعلية لتنمية مهارات الحساب الذهني وسرعة البديهة في الرياضيات بأسلوب ممتع لتنشيط الدماغ.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">حساب ذهني</span>
+                    <span class="tech-tag">تفاعلي</span>
+                </div>
+                <a href="3.html" class="btn-visit">زيارة الموقع</a>
+            </div>
+
+            <!-- مشروع 2: 4.html -->
+            <div class="card project-item" data-status="live">
+                <div class="card-header">
+                    <h3>لعبة حكومية</h3>
+                    <span class="badge live">متاح الآن</span>
+                </div>
+                <p>تجربة لعب تفاعلية تحاكي الإدارة واتخاذ القرارات المصيرية في بيئة حكومية بأسلوب مشوق.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">محاكاة</span>
+                    <span class="tech-tag">استراتيجية</span>
+                </div>
+                <a href="4.html" class="btn-visit">العب الآن</a>
+            </div>
+
+            <!-- مشروع 3 -->
+            <div class="card project-item" data-status="dev">
+                <div class="card-header">
+                    <h3>محاكي السوبر ماركت</h3>
+                    <span class="badge dev">قيد التطوير</span>
+                </div>
+                <p>لعبة محاكاة لإدارة متجر متكامل؛ تشمل ترتيب البضائع، التسعير، خدمة الزبائن، وتوسيع المشروع.</p>
+                <span class="btn-disabled">يُعمل عليه حالياً...</span>
+            </div>
+
+            <!-- مشروع 4 -->
+            <div class="card project-item" data-status="dev">
+                <div class="card-header">
+                    <h3>برمجني</h3>
+                    <span class="badge dev">قيد التطوير</span>
+                </div>
+                <p>منصة تقنية مخصصة لتبسيط مفاهيم البرمجة وتقديم أدوات وموارد مفيدة للمبرمجين.</p>
+                <span class="btn-disabled">يُعمل عليه حالياً...</span>
+            </div>
+
+            <!-- مشروع 5 -->
+            <div class="card project-item" data-status="dev">
+                <div class="card-header">
+                    <h3>منصة تعليمية</h3>
+                    <span class="badge plan">قيد التصميم</span>
+                </div>
+                <p>مشروع تعليمي متكامل يركز على تقديم محتوى معرفي بأسلوب حديث وتجربة مستخدم سلسة.</p>
+                <span class="btn-disabled">قريباً...</span>
+            </div>
+
+            <!-- مشروع 6 -->
+            <div class="card project-item" data-status="dev">
+                <div class="card-header">
+                    <h3>مشاريع أخرى قادمة</h3>
+                    <span class="badge plan">قيد الدراسة</span>
+                </div>
+                <p>مجموعة من الأفكار والمواقع الجديدة التي تخضع حالياً للتخطيط في دفتر الملاحظات السري.</p>
+                <span class="btn-disabled">في مرحلة التخطيط</span>
+            </div>
+        </div>
+
+        <!-- قسم الحشو والهراء الفلسفي -->
+        <section class="lore-section" id="lore">
+            <h2>📜 بيان رسمي حول لا شيء</h2>
+            <p>
+                نؤمن هنا بأن كل سطر برمجي هو قصيدة غير مكتملة، وأن كل فصل في رواية هو خوارزمية تحاول فك شفرة الخيال. وتسمية الملفات بأرقام (1، 2، 3، 4) ليست كسلاً، بل هي قمة البساطة والعبقرية الهندسية!
+            </p>
+            <div class="quote-box">
+                "الكود المثالي هو الكود الذي يعمل دون أن تسأل نفسك لماذا يعمل."
+            </div>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h4>متى ستنتهي المشاريع التي قيد التطوير؟</h4>
+                    <p>عندما تتوقف الأفكار الجديدة عن الظهور في رأسي أثناء محاولة النوم، أي غالباً في عام 2099.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>لماذا تستخدم تطبيق Session للتواصل؟</h4>
+                    <p>لأن الخصوصية ليست رفاهية، ولأننا لا نحتاج إلى مشاركة رقم الهاتف مع كوكب الأرض.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم التواصل -->
+        <div class="contact-box" id="contact">
+            <h2>تواصل معي بشكل آمن</h2>
+            <p>للاستفسارات، التعاون، أو مشاركة رأيك حول الروايات والمشاريع عبر تطبيق <strong>Session</strong>:</p>
+            
+            <div class="session-id-box" id="sessionId">056db42b23c8453c334ad24db5af0aca184677cec6f395a260f40d70c6f640075e</div>
+            <button class="btn-copy" onclick="copySessionId()">نسخ معرف Session</button>
+            <div class="copy-feedback" id="copyFeedback">✓ تم نسخ المعرف بنجاح!</div>
+        </div>
+
+        <footer>
+            <p>جميع الحقوق محفوظة &copy; 2026</p>
+        </footer>
+    </div>
+
+    <!-- شريط التنقل السفلي للهاتف -->
+    <nav class="mobile-nav">
+        <a href="#top">
+            <span class="nav-icon">🏠</span>
+            <span>الرئيسية</span>
+        </a>
+        <a href="#novels">
+            <span class="nav-icon">📖</span>
+            <span>الروايات</span>
+        </a>
+        <a href="#projects">
+            <span class="nav-icon">💻</span>
+            <span>المشاريع</span>
+        </a>
+        <a href="#contact">
+            <span class="nav-icon">💬</span>
+            <span>تواصل</span>
+        </a>
+    </nav>
+
+    <script>
+        function copySessionId() {
+            const sessionIdText = document.getElementById('sessionId').innerText;
+            navigator.clipboard.writeText(sessionIdText).then(() => {
+                const feedback = document.getElementById('copyFeedback');
+                feedback.classList.add('show');
+                setTimeout(() => {
+                    feedback.classList.remove('show');
+                }, 2500);
+            });
+        }
+
+        function filterProjects(status, btnElement) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            const items = document.querySelectorAll('.project-item');
+            items.forEach(item => {
+                if (status === 'all' || item.getAttribute('data-status') === status) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
